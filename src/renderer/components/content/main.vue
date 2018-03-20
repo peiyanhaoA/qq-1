@@ -14,7 +14,7 @@
 				<span class="icon_btn iconfont icon-lifangtilitiduomiantifangkuai icon_list" @click="toggle('news')"></span>
 			</li>
 			<li>
-				<span id="more" class="icon_btn iconfont icon-gengduo icon_list"></span>
+				<span id="more" class="icon_btn iconfont icon-gengduo icon_list" @click="set($event)"></span>
 			</li>
 		</ul>
 		<component id="comp" :is="tableView"></component>
@@ -23,16 +23,50 @@
 <script>
 	import news from './news.vue'
 	import electron from 'electron'
+	import $ from 'jquery'
+	import path from 'path'
 	export default{
 		data(){
 			return{
-				tableView: 'news'
+				tableView: 'news',
+				children: 0
 			}
 		},
 		methods:{
 			toggle(el){
 				console.log(el)
 				this.tableView = el;
+			},
+			set(ev){
+				let vm = this;
+				console.log(vm.children)
+				if (vm.children === 0) {
+					vm.createChild()
+					vm.children += 1;
+				}
+			},
+			createChild(){
+				let vm = this;
+				let BrowserWindow = electron.remote.BrowserWindow;
+				let modalPath = path.join(__dirname, "../children/model.html");
+				console.log(modalPath)
+				let win = new BrowserWindow({
+					width:550,
+					height: 450,
+					maximizable: false,
+				    resizable: true,
+				    frame: false,
+				    show: false,
+				    parent: 'top',
+				    background: 'yellow',
+				    focusable: true
+				});
+				win.on('close', function () { 
+					vm.children = 0
+					win = null
+				})
+  				win.loadURL(modalPath)
+  				win.show()
 			}
 		},
 		components:{
@@ -42,6 +76,7 @@
 			let win = electron.remote.getCurrentWindow();
 			win.setMinimumSize(700, 500);
 			win.setResizable(true);
+			
 		}
 	}
 </script>
@@ -52,6 +87,7 @@
 		background: #fff;
 		display: flex;
 		border-radius: 4px;
+		position: relative;
 	}
 	#icon_lists{
 		width: 60px;

@@ -87,7 +87,7 @@
 				// win.hide();
 				// setTimeout(function(){
 				// 	win.show();
-					vm.$router.push({name: 'main'});
+					// vm.$router.push({name: 'main'});
 				// },2000)
 			},
 			regist(){
